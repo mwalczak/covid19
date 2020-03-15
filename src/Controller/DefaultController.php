@@ -19,7 +19,16 @@ class DefaultController extends AbstractController
         $casesThreshold = $request->get('casesThreshold');
         $deathsThreshold = $request->get('deathsThreshold');
 
-        $data = $dataProvider->getRecentData($includeChina, $includeWorld, $casesThreshold, $deathsThreshold);
+        $dataProvider
+            ->setChina((bool) $includeChina)
+            ->setWorld((bool)$includeWorld);
+        if($casesThreshold){
+            $dataProvider->setCasesThreshold($casesThreshold);
+        }
+        if($deathsThreshold){
+            $dataProvider->setDeathsThreshold($deathsThreshold);
+        }
+        $data = $dataProvider->getRecentData();
 
         return $this->render('default/index.html.twig', [
             'data' => $data,
@@ -27,6 +36,30 @@ class DefaultController extends AbstractController
             'world' => $includeWorld,
             'cases' => $casesThreshold,
             'deaths' => $deathsThreshold,
+            'updated' => $dataProvider->getDataTime(),
+            'locationsCount' => $dataProvider->getLocationsCount()
+        ]);
+    }
+
+    /**
+     * @Route("/compare", name="compare")
+     */
+    public function compare(DataProvider $dataProvider, Request $request)
+    {
+        $locations = explode(',', $request->get('locations'));
+
+        $data = $dataProvider
+            ->filterLocations($locations)
+            ->groupByNameAndLocation()
+            ->getRecentData();
+
+        krsort($data);
+
+        sort($locations);
+
+        return $this->render('default/compare.html.twig', [
+            'data' => $data,
+            'locations' => $locations,
             'updated' => $dataProvider->getDataTime()
         ]);
     }

@@ -26,12 +26,25 @@ $(document).ready(function () {
         ordering: true,
         info: false,
         searching: true,
-        order: [[ 2, "desc" ]]
+        order: [[ $('.table').data('sort'), "desc" ]]
     });
 
-    $( ".finger" ).animate({
-        left: "-=200",
+    $('.finger').animate({
+        left: '-=200',
     }, 1000, function() {
         $(this).hide();
+    });
+
+    $('.location').click(function () {
+        let listElement = $('.compare-list');
+        let locationList = listElement.text().length ? listElement.html().split(',') : [];
+
+        if($.inArray($(this).text(), locationList) === -1){
+            locationList.push($(this).text());
+        }
+        console.log(locationList);
+        listElement.html(locationList.join(','));
+        $('.compare-button').attr('href', $('.compare-button').data('href')+locationList.join(','));
+        $('.compare-list-div').show();
     });
 });

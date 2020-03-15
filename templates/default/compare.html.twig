@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a href="{{ path('index') }}">Main page</a>
+    <h4>Comparing: {{ locations|join(', ') }}</h4>
+    <div class="chart-compare" style="height: 400px">
+        <canvas data-stats="{{ data|json_encode }}"></canvas>
+    </div>
+    <div class="table-responsive">
+        <table class="table" data-sort="0">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th colspan="{{ locations | length }}">New cases</th>
+                <th colspan="{{ locations | length }}">New deaths</th>
+                <th colspan="{{ locations | length }}">Total cases</th>
+                <th colspan="{{ locations | length }}">Total deaths</th>
+                <th colspan="{{ locations | length }}">Death %</th>
+            </tr>
+            <tr>
+                <th></th>
+                {% for i in range(0, 4) %}
+                    {% for location in locations %}
+                        <th>{{ location }}</th>
+                    {% endfor %}
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for date, location_data in data %}
+                <tr>
+                    <td>{{ date }}</td>
+                    {% for location, record in location_data %}
+                        <td>{{ record.newCases }}</td>
+                    {% endfor %}
+                    {% for location, record in location_data %}
+                        <td>{{ record.newDeaths }}</td>
+                    {% endfor %}
+                    {% for location, record in location_data %}
+                        <td>{{ record.cases }}</td>
+                    {% endfor %}
+                    {% for location, record in location_data %}
+                        <td>{{ record.deaths }}</td>
+                    {% endfor %}
+                    {% for location, record in location_data %}
+                        <td>{{ record.deathPercent }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('compare') }}
+{% endblock %}

@@ -3,8 +3,9 @@ footer {
   border-top: #0c0c0c solid 2px;
   background-color: #EEEEEE;
 }
-a {
+a, .location {
   color: #2EA1FF;
+  cursor: pointer;
 }
 .settings a {
   margin: 10px;
@@ -20,4 +21,11 @@ a {
 and (min-device-width : 200px)
 and (max-device-width : 800px){
   .finger {display: inline;}
+}
+.compare-list-div {
+  display: none;
+  padding-left: 10px;
+}
+.compare-list-div a {
+  margin-left: 20px;
 }
