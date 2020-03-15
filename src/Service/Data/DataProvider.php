@@ -6,15 +6,13 @@ namespace App\Service\Data;
 
 use App\DTO\Data;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use \DateTime;
 
 class DataProvider
 {
     private string $dataDirectory;
     private LoggerInterface $logger;
     private bool $includeChina = false;
-    private bool $includeWorld = false;
     private int $casesThreshold = 0;
     private int $deathsThreshold = 0;
     private array $filterLocations = [];
@@ -37,13 +35,6 @@ class DataProvider
     public function setChina(bool $include): DataProvider
     {
         $this->includeChina = $include;
-
-        return $this;
-    }
-
-    public function setWorld(bool $include): DataProvider
-    {
-        $this->includeWorld = $include;
 
         return $this;
     }
@@ -71,36 +62,103 @@ class DataProvider
 
     public function getRecentData()
     {
+        /** @var Data[] $data */
         $data = [];
-        $filename = $this->generateFilename();
-        if (!is_file($filename)) {
-            $this->downloadData();
-        }
-        if (($h = fopen($filename, "r")) !== FALSE) {
-            $header = fgetcsv($h, 1000, ",");
-            while (($line = fgetcsv($h, 1000, ",")) !== FALSE) {
-                $record = Data::fromArray($line);
-                if ($record->isChina && !$this->includeChina || $record->isWorld && !$this->includeWorld ||
-                    $this->casesThreshold && $record->cases < $this->casesThreshold || $this->deathsThreshold && $record->deaths < $this->deathsThreshold ||
-                    !empty($this->filterLocations) && !in_array($record->location, $this->filterLocations)) {
-                    continue;
-                }
-                if($this->groupByDateAndLocation){
-                    $data[$record->date][$record->location] = $record;
-                } else {
-                    $data[] = $record;
-                }
-                if(!in_array($record->location, $this->uniqueLocations)){
-                    $this->uniqueLocations[] = $record->location;
-                }
+
+        foreach($this->downloadData() as $record){
+            /** @var Data $record */
+            if ($record->isChina && !$this->includeChina ||
+                $this->casesThreshold && $record->cases < $this->casesThreshold || $this->deathsThreshold && $record->deaths < $this->deathsThreshold ||
+                !empty($this->filterLocations) && !in_array($record->location, $this->filterLocations)) {
+                continue;
             }
-            fclose($h);
+
+            if(!in_array($record->location, $this->uniqueLocations)){
+                $this->uniqueLocations[] = $record->location;
+            }
+            if($this->groupByDateAndLocation){
+                $data[$record->date][$record->location] = $record;
+            } else {
+                $data[] = $record;
+            }
         }
         if($this->groupByDateAndLocation){
             $this->normalizeData($data);
         }
 
         return $data;
+    }
+
+    private function downloadData()
+    {
+        if(is_file($this->generateFilename())){
+            return json_decode(file_get_contents($this->generateFilename()));
+        }
+
+        $data = [];
+        $confirmedFile = $this->dataDirectory . '/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv';
+        $deathsFile = $this->dataDirectory . '/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv';
+
+        if (($h = fopen($confirmedFile, "r")) !== FALSE) {
+            $header = fgetcsv($h, 1000, ",");
+            while (($line = fgetcsv($h, 1000, ",")) !== FALSE) {
+                $record = array_combine($header, $line);
+                $location = $record['Country/Region'];
+                foreach($record as $field => $value){
+                    if(preg_match('/^[\d\/]+$/', $field)){
+                        $date = (new DateTime($field))->format('Y-m-d');
+                        /** @var Data $dataDTO */
+                        $dataDTO = isset($data[$location][$date]) ? $data[$location][$date] : new Data($date, $location);
+                        $dataDTO->cases += $value;
+                        $data[$location][$date] = $dataDTO;
+                    }
+                }
+            }
+            fclose($h);
+        }
+
+        if (($h = fopen($deathsFile, "r")) !== FALSE) {
+            $header = fgetcsv($h, 1000, ",");
+            while (($line = fgetcsv($h, 1000, ",")) !== FALSE) {
+                $record = array_combine($header, $line);
+                $location = $record['Country/Region'];
+                foreach($record as $field => $value){
+                    if(preg_match('/^[\d\/]+$/', $field)){
+                        $date = (new DateTime($field))->format('Y-m-d');
+                        /** @var Data $dataDTO */
+                        $dataDTO = isset($data[$location][$date]) ? $data[$location][$date] : new Data($date, $location);
+                        $dataDTO->deaths += $value;
+                        $dataDTO->calcDeathsPercent();
+                        $data[$location][$date] = $dataDTO;
+                    }
+                }
+            }
+            fclose($h);
+        }
+
+        $allData = [];
+
+        foreach($data as $location => $dateData){
+            ksort($dateData);
+            /** @var Data|null $lastRecord */
+            $lastRecord = null;
+            foreach($dateData as $date => $record){
+                /** @var Data $record */
+                if($lastRecord){
+                    $record->newCases = $record->cases - $lastRecord->cases;
+                    $record->newDeaths = $record->deaths - $lastRecord->deaths;
+                } else {
+                    $record->newCases = $record->cases;
+                    $record->newDeaths = $record->deaths;
+                }
+                $allData[] = $record;
+                $lastRecord = $record;
+            }
+        }
+
+        file_put_contents($this->generateFilename(), json_encode($allData));
+
+        return $allData;
     }
 
     private function normalizeData(array &$data)
@@ -134,17 +192,5 @@ class DataProvider
     private function generateFilename()
     {
         return $this->dataDirectory . '/' . (new \DateTime())->format('Y-m-d');
-    }
-
-    private function downloadData()
-    {
-        try {
-            $client = HttpClient::create();
-            $response = $client->request('GET', 'https://covid.ourworldindata.org/data/full_data.csv');
-
-            file_put_contents($this->generateFilename(), $response->getContent());
-        } catch (ExceptionInterface $e) {
-            $this->logger->warning('download exception: ' . $e->getMessage());
-        }
     }
 }

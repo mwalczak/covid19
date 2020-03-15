@@ -15,13 +15,11 @@ class DefaultController extends AbstractController
     public function index(DataProvider $dataProvider, Request $request)
     {
         $includeChina = $request->get('includeChina');
-        $includeWorld = $request->get('includeWorld');
-        $casesThreshold = $request->get('casesThreshold');
+        $casesThreshold = $request->get('casesThreshold', 100);
         $deathsThreshold = $request->get('deathsThreshold');
 
         $dataProvider
-            ->setChina((bool) $includeChina)
-            ->setWorld((bool)$includeWorld);
+            ->setChina((bool) $includeChina);
         if($casesThreshold){
             $dataProvider->setCasesThreshold($casesThreshold);
         }
@@ -33,7 +31,6 @@ class DefaultController extends AbstractController
         return $this->render('default/index.html.twig', [
             'data' => $data,
             'china' => $includeChina,
-            'world' => $includeWorld,
             'cases' => $casesThreshold,
             'deaths' => $deathsThreshold,
             'updated' => $dataProvider->getDataTime(),
