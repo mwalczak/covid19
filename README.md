@@ -4,7 +4,7 @@ Made with Symfony 5
 
 Feel free to extend or get in touch with any feature or co-work requests 
 
-Data provided by: https://covid.ourworldindata.org/data/full_data.csv
+Data provided by: https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series
 
 
 ## Setup env
