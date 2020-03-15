@@ -4,6 +4,7 @@
 
 {% block body %}
     <h3>Total records: {{ data|length }}</h3>
+    <h4>Last update: {{ updated|date('Y-m-d H:i') }}</h4>
     <div class="settings">
         {% if(china) %}
             <a href="{{ path('index', {'includeChina': 0, 'includeWorld': world, 'casesThreshold': cases, 'deathsThreshold': deaths }) }}">Exclude China</a>

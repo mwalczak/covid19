@@ -42,6 +42,16 @@ class DataProvider
         return $data;
     }
 
+    public function getDataTime(): ?\DateTime
+    {
+        $filename = $this->generateFilename();
+        if($time = filectime($filename)){
+            return new \DateTime('@'.$time);
+        }
+
+        return null;
+    }
+
     private function generateFilename()
     {
         return $this->dataDirectory . '/' . (new \DateTime())->format('Y-m-d');

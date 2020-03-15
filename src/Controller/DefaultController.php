@@ -26,7 +26,8 @@ class DefaultController extends AbstractController
             'china' => $includeChina,
             'world' => $includeWorld,
             'cases' => $casesThreshold,
-            'deaths' => $deathsThreshold
+            'deaths' => $deathsThreshold,
+            'updated' => $dataProvider->getDataTime()
         ]);
     }
 }
