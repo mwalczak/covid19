@@ -15,26 +15,11 @@ require('bootstrap');
 require('chart.js');
 require('datatables.net');
 
-$(document).ready(function () {
-    $('.table thead tr').clone(true).appendTo('.table thead');
-    $('.table thead tr:eq(1) th').each(function (i) {
-        const title = $(this).text();
-        if (i < 2) {
-            $(this).html('<input type="text" placeholder="Search ' + title + '" />');
-            $('input', this).on('keyup change', function () {
-                if (table.column(i).search() !== this.value) {
-                    table
-                        .column(i)
-                        .search(this.value)
-                        .draw();
-                }
-            });
-        } else {
-            $(this).html('');
-        }
-    });
+require('@fortawesome/fontawesome-free/css/all.min.css');
+require('@fortawesome/fontawesome-free/js/all.js');
 
-    let table = $('.table').DataTable({
+$(document).ready(function () {
+    $('.table').DataTable({
         orderCellsTop: true,
         fixedHeader: true,
         paging: false,
@@ -42,5 +27,11 @@ $(document).ready(function () {
         info: false,
         searching: true,
         order: [[ 2, "desc" ]]
+    });
+
+    $( ".finger" ).animate({
+        left: "-=200",
+    }, 1000, function() {
+        $(this).hide();
     });
 });
