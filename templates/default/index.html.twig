@@ -16,14 +16,14 @@
             <a href="{{ path('index', {'includeWorld': 1, 'includeChina': china, 'casesThreshold': cases, 'deathsThreshold': deaths }) }}">Include World</a>
         {% endif %}
         {% if(cases) %}
-            <a href="{{ path('index', {'casesThreshold': 0, 'includeWorld': world, 'includeChina': china, 'deathsThreshold': deaths }) }}">Show all cases</a>
+            <a href="{{ path('index', {'casesThreshold': 0, 'includeWorld': world, 'includeChina': china, 'deathsThreshold': deaths }) }}">All cases</a>
         {% else %}
-            <a href="{{ path('index', {'casesThreshold': 1, 'includeWorld': world, 'includeChina': china, 'deathsThreshold': deaths }) }}">Show over 100 cases total</a>
+            <a href="{{ path('index', {'casesThreshold': 1, 'includeWorld': world, 'includeChina': china, 'deathsThreshold': deaths }) }}">> 100 cases total</a>
         {% endif %}
         {% if(deaths) %}
-            <a href="{{ path('index', {'deathsThreshold': 0, 'includeWorld': world, 'includeChina': china, 'casesThreshold': cases }) }}">Show all deaths</a>
+            <a href="{{ path('index', {'deathsThreshold': 0, 'includeWorld': world, 'includeChina': china, 'casesThreshold': cases }) }}">All deaths</a>
         {% else %}
-            <a href="{{ path('index', {'deathsThreshold': 1, 'includeWorld': world, 'includeChina': china, 'casesThreshold': cases }) }}">Show over 100 deaths total</a>
+            <a href="{{ path('index', {'deathsThreshold': 1, 'includeWorld': world, 'includeChina': china, 'casesThreshold': cases }) }}">> 100 deaths total</a>
         {% endif %}
     </div>
     <div class="table-responsive">

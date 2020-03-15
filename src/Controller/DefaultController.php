@@ -10,16 +10,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/{includeChina?}/{includeWorld?}/{casesThreshold?}/{deathsThreshold?}", name="index")
+     * @Route("/", name="index")
      */
-    public function index($includeChina, $includeWorld, $casesThreshold, $deathsThreshold, DataProvider $dataProvider, Request $request)
+    public function index(DataProvider $dataProvider, Request $request)
     {
-        $includeChina ??= 0;
-        $includeWorld ??= 0;
-        $casesThreshold ??= 0;
-        $deathsThreshold ??= 0;
+        $includeChina = $request->get('includeChina');
+        $includeWorld = $request->get('includeWorld');
+        $casesThreshold = $request->get('casesThreshold');
+        $deathsThreshold = $request->get('deathsThreshold');
 
-        $data = $dataProvider->getRecentData((bool) $includeChina, (bool) $includeWorld, (bool) $casesThreshold, (bool) $deathsThreshold);
+        $data = $dataProvider->getRecentData($includeChina, $includeWorld, $casesThreshold, $deathsThreshold);
 
         return $this->render('default/index.html.twig', [
             'data' => $data,
