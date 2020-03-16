@@ -5,4 +5,4 @@ cd data/COVID-19 || exit
 git pull
 cd ..
 FILENAME=$(date +'%Y-%m-%d')
-rm $FILENAME
+rm -f $FILENAME
