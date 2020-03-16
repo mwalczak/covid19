@@ -45,6 +45,5 @@ $(document).ready(function () {
         console.log(locationList);
         listElement.html(locationList.join(','));
         $('.compare-button').attr('href', $('.compare-button').data('href')+locationList.join(','));
-        $('.compare-list-div').show();
     });
 });
