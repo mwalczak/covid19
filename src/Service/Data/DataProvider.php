@@ -163,6 +163,36 @@ class DataProvider
 
     private function normalizeData(array &$data)
     {
+        $startDate = [];
+        if(!empty($this->casesThreshold)){
+            ksort($data);
+            foreach($data as $date => $locationsData){
+                /** @var Data $record */
+                foreach($locationsData as $location => $record){
+                    if($record->cases >= $this->casesThreshold && empty($startDate[$location])){
+                        $startDate[$location] = $date;
+                    }
+                }
+            }
+
+            $normalizedData = [];
+            $dayCounter = [];
+            foreach($this->filterLocations as $location){
+                $dayCounter[$location] = 0;
+            }
+            foreach($data as $date => $locationsData){
+                ksort($locationsData);
+                foreach($locationsData as $location=>$record){
+                    if(!empty($startDate[$location]) && $date>=$startDate[$location]){
+                        $record->date = $dayCounter[$location]++;
+                        $normalizedData[$record->date][$location] = $record;
+                    }
+                }
+            }
+
+            $data = $normalizedData;
+        }
+
         foreach($data as $date => $locationsData){
             foreach($this->filterLocations as $location){
                 if(empty($locationsData[$location])){
@@ -172,6 +202,7 @@ class DataProvider
             ksort($locationsData);
             $data[$date] = $locationsData;
         }
+        krsort($data);
     }
 
     public function getLocationsCount(): int

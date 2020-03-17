@@ -18,15 +18,16 @@ $(document).ready(function () {
                         if(datasets[key]===undefined){
                             datasets[key] = [];
                         }
-                        if(field.match(/percent/i)){
+                        if(field.match(/percent/i) && ctx.data('reverse') || value!=null){
                             datasets[key].push(Math.round(100 * value)/100);
-                        } else {
+                        } else if(ctx.data('reverse') || value!=null) {
                             datasets[key].push(value);
                         }
                     }
                 });
             });
         });
+
 
         let chartDataSets = [];
 
@@ -35,7 +36,7 @@ $(document).ready(function () {
                 label: label,
                 fill: false,
                 borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
-                data: data.reverse(),
+                data: ctx.data('reverse') ? data.reverse() : data,
                 hidden: !label.match(/percent/i)
             });
         });
@@ -43,7 +44,7 @@ $(document).ready(function () {
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels.reverse(),
+                labels: ctx.data('reverse') ? labels.reverse() : labels,
                 datasets: chartDataSets
             },
             options: {

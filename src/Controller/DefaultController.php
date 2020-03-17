@@ -44,11 +44,16 @@ class DefaultController extends AbstractController
     public function compare(DataProvider $dataProvider, Request $request)
     {
         $locations = explode(',', $request->get('locations'));
+        $casesThreshold = $request->get('casesThreshold', 0);
 
-        $data = $dataProvider
+        $dataProvider
             ->filterLocations($locations)
-            ->groupByNameAndLocation()
-            ->getRecentData();
+            ->groupByNameAndLocation();
+        if($casesThreshold){
+            $dataProvider->setCasesThreshold($casesThreshold);
+        }
+
+        $data = $dataProvider->getRecentData();
 
         krsort($data);
 
@@ -57,7 +62,9 @@ class DefaultController extends AbstractController
         return $this->render('default/compare.html.twig', [
             'data' => $data,
             'locations' => $locations,
-            'updated' => $dataProvider->getDataTime()
+            'updated' => $dataProvider->getDataTime(),
+            'reverse' => !(bool) $casesThreshold,
+            'casesThreshold' => $casesThreshold,
         ]);
     }
 }

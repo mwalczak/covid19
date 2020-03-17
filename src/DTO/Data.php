@@ -8,14 +8,14 @@ class Data
 {
     public string $date;
     public string $location;
-    public int $cases = 0;
-    public int $deaths = 0;
-    public int $newCases = 0;
-    public int $newDeaths = 0;
+    public ?int $cases = 0;
+    public ?int $deaths = 0;
+    public ?int $newCases = 0;
+    public ?int $newDeaths = 0;
     public ?float $deathPercent = 0.0;
     public bool $isChina = false;
 
-    public function __construct(string $date, string $location, int $newCases = 0, int $newDeaths = 0, int $cases = 0, int $deaths = 0)
+    public function __construct(string $date, string $location, int $newCases = null, int $newDeaths = null, int $cases = null, int $deaths = null)
     {
         $this->date = $date;
         $this->location = $location;

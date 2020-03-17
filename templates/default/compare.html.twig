@@ -3,8 +3,14 @@
 {% block body %}
     <a href="{{ path('index') }}">Main page</a>
     <h4>Comparing: {{ locations|join(', ') }}</h4>
+    <form method="get" action="{{ path('compare') }}">
+        Set cases threshold:
+        <input type="hidden" name="locations" value="{{ locations|join(',') }}"/>
+        <input type="text" name="casesThreshold" value="{{ casesThreshold  }}"/>
+        <button>Reload</button>
+    </form>
     <div class="chart-compare" style="height: 400px">
-        <canvas data-stats="{{ data|json_encode }}"></canvas>
+        <canvas data-reverse="{{ reverse }}" data-stats="{{ data|json_encode }}"></canvas>
     </div>
     <div class="table-responsive">
         <table class="table" data-sort="0">
