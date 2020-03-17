@@ -32,12 +32,20 @@ $(document).ready(function () {
         let chartDataSets = [];
 
         $.each(datasets, function (label, data) {
+            let show = false;
+            let regex = new RegExp(ctx.data('chart'));
+            if(ctx.data('chart') && label.match(regex)){
+                show = true;
+            } else if(!ctx.data('chart') && label.match(/percent/i)) {
+                show = true;
+            }
+
             chartDataSets.push({
                 label: label,
                 fill: false,
                 borderColor: '#' + Math.floor(Math.random() * 16777215).toString(16),
                 data: ctx.data('reverse') ? data.reverse() : data,
-                hidden: !label.match(/percent/i)
+                hidden: !show
             });
         });
 

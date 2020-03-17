@@ -10,7 +10,7 @@
         <button>Reload</button>
     </form>
     <div class="chart-compare" style="height: 400px">
-        <canvas data-reverse="{{ reverse }}" data-stats="{{ data|json_encode }}"></canvas>
+        <canvas data-chart="{{ chart }}" data-reverse="{{ reverse }}" data-stats="{{ data|json_encode }}"></canvas>
     </div>
     <div class="table-responsive">
         <table class="table" data-sort="0">

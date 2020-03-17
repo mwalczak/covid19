@@ -45,6 +45,7 @@ class DefaultController extends AbstractController
     {
         $locations = explode(',', $request->get('locations'));
         $casesThreshold = $request->get('casesThreshold', 0);
+        $chart = $request->get('chart');
 
         $dataProvider
             ->filterLocations($locations)
@@ -65,6 +66,7 @@ class DefaultController extends AbstractController
             'updated' => $dataProvider->getDataTime(),
             'reverse' => !(bool) $casesThreshold,
             'casesThreshold' => $casesThreshold,
+            'chart' => $chart
         ]);
     }
 }
