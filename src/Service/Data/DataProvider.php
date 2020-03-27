@@ -96,8 +96,8 @@ class DataProvider
         }
 
         $data = [];
-        $confirmedFile = $this->dataDirectory . '/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv';
-        $deathsFile = $this->dataDirectory . '/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv';
+        $confirmedFile = $this->dataDirectory . '/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv';
+        $deathsFile = $this->dataDirectory . '/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
 
         if (($h = fopen($confirmedFile, "r")) !== FALSE) {
             $header = fgetcsv($h, 1000, ",");
