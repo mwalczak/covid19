@@ -10,14 +10,14 @@
             <a href="{{ path('index', {'includeChina': 1, 'casesThreshold': cases, 'deathsThreshold': deaths }) }}">Include&nbsp;China</a>
         {% endif %}
         {% if(cases) %}
-            <a href="{{ path('index', {'casesThreshold': 0, 'includeChina': china, 'deathsThreshold': deaths }) }}">Cases:&nbsp;>100&nbsp;(Show&nbsp;all)</a>
+            <a href="{{ path('index', {'casesThreshold': 0, 'includeChina': china, 'deathsThreshold': deaths }) }}">Cases:&nbsp;>10000&nbsp;(Show&nbsp;all)</a>
         {% else %}
-            <a href="{{ path('index', {'casesThreshold': 100, 'includeChina': china, 'deathsThreshold': deaths }) }}">Cases:&nbsp;all&nbsp;(Show&nbsp;>100)</a>
+            <a href="{{ path('index', {'casesThreshold': 10000, 'includeChina': china, 'deathsThreshold': deaths }) }}">Cases:&nbsp;all&nbsp;(Show&nbsp;>100)</a>
         {% endif %}
         {% if(deaths) %}
-            <a href="{{ path('index', {'deathsThreshold': 0, 'includeChina': china, 'casesThreshold': cases }) }}">Deaths:&nbsp;>100&nbsp;(Show&nbsp;all)</a>
+            <a href="{{ path('index', {'deathsThreshold': 0, 'includeChina': china, 'casesThreshold': cases }) }}">Deaths:&nbsp;>1000&nbsp;(Show&nbsp;all)</a>
         {% else %}
-            <a href="{{ path('index', {'deathsThreshold': 100, 'includeChina': china, 'casesThreshold': cases }) }}">Deaths:&nbsp;all&nbsp;(Show&nbsp;>100)</a>
+            <a href="{{ path('index', {'deathsThreshold': 1000, 'includeChina': china, 'casesThreshold': cases }) }}">Deaths:&nbsp;all&nbsp;(Show&nbsp;>100)</a>
         {% endif %}
         <a href="{{ path('index') }}">Clear&nbsp;filters</a>
     </div>
