@@ -100,8 +100,8 @@ class DataProvider
         $deathsFile = $this->dataDirectory . '/COVID-19/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
 
         if (($h = fopen($confirmedFile, "r")) !== FALSE) {
-            $header = fgetcsv($h, 1000, ",");
-            while (($line = fgetcsv($h, 1000, ",")) !== FALSE) {
+            $header = fgetcsv($h, 100000, ",");
+            while (($line = fgetcsv($h, 100000, ",")) !== FALSE) {
                 $record = array_combine($header, $line);
                 $location = $record['Country/Region'];
                 foreach($record as $field => $value){
@@ -118,8 +118,8 @@ class DataProvider
         }
 
         if (($h = fopen($deathsFile, "r")) !== FALSE) {
-            $header = fgetcsv($h, 1000, ",");
-            while (($line = fgetcsv($h, 1000, ",")) !== FALSE) {
+            $header = fgetcsv($h, 100000, ",");
+            while (($line = fgetcsv($h, 100000, ",")) !== FALSE) {
                 $record = array_combine($header, $line);
                 $location = $record['Country/Region'];
                 foreach($record as $field => $value){
