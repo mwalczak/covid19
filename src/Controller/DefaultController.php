@@ -15,8 +15,8 @@ class DefaultController extends AbstractController
     public function index(DataProvider $dataProvider, Request $request)
     {
         $includeChina = $request->get('includeChina');
-        $casesThreshold = $request->get('casesThreshold', 100);
-        $deathsThreshold = $request->get('deathsThreshold');
+        $casesThreshold = $request->get('casesThreshold', 10000);
+        $deathsThreshold = $request->get('deathsThreshold', 1000);
 
         $dataProvider
             ->setChina((bool) $includeChina);
